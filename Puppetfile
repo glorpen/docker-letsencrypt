@@ -1,0 +1,6 @@
+mod 'puppetlabs-stdlib', '5.2.0'
+mod 'puppetlabs/concat', '6.1.0'
+mod 'puppetlabs/translate', '2.0.0'
+mod 'puppetlabs/inifile', '2.5.0'
+mod 'puppetlabs/cron_core', '1.0.2'
+mod 'puppet/letsencrypt', '4.0.0'

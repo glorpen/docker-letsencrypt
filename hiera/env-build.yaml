@@ -1,0 +1,3 @@
+puppetizer_main::email: example@example.com
+puppetizer_main::consul_token: example
+puppetizer_main::consul_host: 127.0.0.1

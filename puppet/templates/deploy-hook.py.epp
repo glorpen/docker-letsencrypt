@@ -1,0 +1,26 @@
+#!/usr/bin/python3
+
+import os
+import consulate
+import pathlib
+
+lineage_path = pathlib.Path(os.environ.get("RENEWED_LINEAGE"))
+domains = os.environ.get("RENEWED_DOMAINS").split(" ")
+
+root_key = "<%=$letsencrypt_key %>"
+
+consul = consulate.Consul(
+  token="<%=$consul_token %>",
+  host="<%=$consul_host %>",
+  port=<%=$consul_port %>,
+  scheme="<%=$consul_scheme %>"
+)
+
+kv = consul.kv
+
+for filepath in lineage_path.iterdir():
+    if filepath.suffix != ".pem":
+        continue
+
+    for domain in domains:
+        kv["/".join(root_key, domain, filepath.name)] = filepath.read_text()
