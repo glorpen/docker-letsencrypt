@@ -7,7 +7,7 @@ COPY ./Puppetfile /opt/puppetizer/etc/puppet/puppetfile
 RUN /opt/puppetizer/bin/update-modules
 
 RUN apk update \
-    && apk add certbot \
+    && apk add certbot bash \
     && pip3 install consulate==0.6.0 \
     && rm -rf /var/cache/apk/* /root/.cache \
     && sed -i /usr/lib/python3*/site-packages/certbot/log.py -e 's/\(maxBytes=[^,]\+\)/mode="w"/'
