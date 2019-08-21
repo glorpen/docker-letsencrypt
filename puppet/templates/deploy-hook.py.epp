@@ -24,4 +24,4 @@ for filepath in lineage_path.iterdir():
         continue
 
     for domain in domains:
-        kv["/".join((root_key, domain, filepath.stem))] = filepath.read_text()
+        kv["/".join((root_key, lineage_path.name, filepath.stem))] = filepath.read_text()
