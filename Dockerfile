@@ -6,6 +6,7 @@ COPY ./Puppetfile /opt/puppetizer/etc/puppet/puppetfile
 
 RUN /opt/puppetizer/bin/update-modules
 
+# bash is needed for puppet-letsencrypt hooks
 RUN apk update \
     && apk add certbot bash \
     && pip3 install consulate==0.6.0 \
