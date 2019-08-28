@@ -18,15 +18,16 @@ consul = consulate.Consul(
 
 known_keys = []
 
-for cert_dir in store_dir.iterdir():
-  if not cert_dir.is_dir():
-    continue
-  for pem_file in cert_dir.iterdir():
-     if pem_file.suffix != ".pem":
-         continue
-     k = "/".join([root_key, cert_dir.stem, pem_file.stem])
-     known_keys.append(k)
-     consul.kv[k] = pem_file.read_text()
+if store_dir.exists():
+  for cert_dir in store_dir.iterdir():
+    if not cert_dir.is_dir():
+      continue
+    for pem_file in cert_dir.iterdir():
+      if pem_file.suffix != ".pem":
+          continue
+      k = "/".join([root_key, cert_dir.stem, pem_file.stem])
+      known_keys.append(k)
+      consul.kv[k] = pem_file.read_text()
 
 old_keys = set(i for i in consul.kv.find(root_key+"/"))
 
