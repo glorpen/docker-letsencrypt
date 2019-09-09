@@ -7,7 +7,10 @@ class puppetizer_main(
   String $consul_scheme = 'http',
   Stdlib::Unixpath $config_dir = '/etc/letsencrypt',
   Boolean $agree_tos = false,
-  Hash[String, Struct[{'domains'=>Optional[Array[String]], 'plugin'=>Letsencrypt::Plugin, 'test'=>Optional[Boolean]}]] $certs = {}
+  Hash[String, Struct[{'domains'=>Optional[Array[String]], 'plugin'=>Letsencrypt::Plugin, 'test'=>Optional[Boolean]}]] $certs = {},
+  Optional[String] $proxy_url = undef,
+  Integer $proxy_tries = 10,
+  Optional[Integer] $proxy_req_http_code = undef,
 ){
 
   $_agree_tos = $facts['puppetizer']['building']?{
@@ -52,6 +55,22 @@ class puppetizer_main(
       'consul_scheme'   => $consul_scheme
     }),
     mode    => 'u=rwx,go=rx'
+  }
+
+  if ($proxy_url) {
+    if $proxy_req_http_code != undef {
+      $_proxy_arg = "--http-code ${proxy_req_http_code}"
+    } else {
+      $_proxy_arg = ''
+    }
+    exec { 'wait for proxy':
+      command   => "/usr/local/bin/letsencrypt-wait-for-proxy ${proxy_url} ${proxy_tries} ${_proxy_arg}",
+      timeout   => $proxy_tries * 2,
+      logoutput => true
+    }
+
+    Exec['wait for proxy']
+    ->Letsencrypt::Certonly <| |>
   }
 
   $certs.each | $_name, $conf | {

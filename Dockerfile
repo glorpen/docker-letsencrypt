@@ -15,5 +15,6 @@ RUN apk update \
 
 COPY ./hiera/ /opt/puppetizer/puppet/hiera/
 ADD ./puppet/ /opt/puppetizer/puppet/modules/puppetizer_main/
+ADD proxy-wait.py /usr/local/bin/letsencrypt-wait-for-proxy
 
 RUN /opt/puppetizer/bin/build

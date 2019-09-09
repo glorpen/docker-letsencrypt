@@ -19,7 +19,10 @@ class puppetizer_main::service {
   }
   puppetizer::service { 'cron':
     start_content => "#!/bin/sh -e\nexec crond -f -d 7",
-    stop_content => "#!/bin/sh -e\nexec kill \$1",
-    require => Exec['letsencrypt-store']
+    stop_content => "#!/bin/sh -e\nexec kill \$1"
   }
+
+  Letsencrypt::Certonly <| |>
+  ->Exec['letsencrypt-store']
+  ->Puppetizer::Service['cron']
 }
