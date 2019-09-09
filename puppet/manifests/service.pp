@@ -18,7 +18,8 @@ class puppetizer_main::service {
     noop    => $facts['puppetizer']['building']
   }
   puppetizer::service { 'cron':
-    run_content => "#!/bin/sh -e\nexec crond -f -d 7",
+    start_content => "#!/bin/sh -e\nexec crond -f -d 7",
+    stop_content => "#!/bin/sh -e\nexec kill \$1",
     require => Exec['letsencrypt-store']
   }
 }
