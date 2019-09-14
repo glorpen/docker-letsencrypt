@@ -1,4 +1,4 @@
-FROM glorpen/puppetizer-base:3.0.0-alpine3.10-6.8.0
+FROM glorpen/puppetizer-base:3.1.0-alpine3.10-6.8.0
 
 LABEL maintainer="Arkadiusz Dzięgiel <arkadiusz.dziegiel@glorpen.pl>"
 

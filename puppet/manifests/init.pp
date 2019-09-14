@@ -11,6 +11,7 @@ class puppetizer_main(
   Optional[String] $proxy_url = undef,
   Integer $proxy_tries = 10,
   Optional[Integer] $proxy_req_http_code = undef,
+  Optional[String] $wait_before_init = undef
 ){
 
   $_agree_tos = $facts['puppetizer']['building']?{
@@ -57,6 +58,16 @@ class puppetizer_main(
     mode    => 'u=rwx,go=rx'
   }
 
+  # optional wait after starting in swarm
+  exec { 'wait before init':
+    command   => "/bin/sleep ${wait_before_init}",
+    timeout   => 0,
+    logoutput => true,
+    noop      => $wait_before_init == undef or ! $facts['puppetizer']['initializing']
+  }
+  Exec['wait before init']
+  ->Letsencrypt::Certonly <| |>
+
   if ($proxy_url) {
     if $proxy_req_http_code != undef {
       $_proxy_arg = "--http-code ${proxy_req_http_code}"
@@ -65,11 +76,12 @@ class puppetizer_main(
     }
     exec { 'wait for proxy':
       command   => "/usr/local/bin/letsencrypt-wait-for-proxy ${proxy_url} ${proxy_tries} ${_proxy_arg}",
-      timeout   => $proxy_tries * 2,
+      timeout   => 0,
       logoutput => true
     }
 
-    Exec['wait for proxy']
+    Exec['wait before init']
+    ->Exec['wait for proxy']
     ->Letsencrypt::Certonly <| |>
   }
 
